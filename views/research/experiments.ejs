@@ -1,0 +1,132 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold m-0">Experiment Control Panel</h2>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Experiment Runner Form -->
+  <div class="col-md-5">
+    <div class="card h-100 shadow-sm border-0 bg-dark">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2">
+        <h5 class="card-title fw-bold m-0"><i class="bi bi-play-circle me-2 text-info"></i> Run New Experiment</h5>
+      </div>
+      <div class="card-body">
+        <form action="/research/experiments/run" method="POST">
+          <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+          
+          <div class="mb-3">
+            <label class="form-label text-muted small text-uppercase">Experiment Suite</label>
+            <select class="form-select bg-dark text-light border-secondary" name="suite">
+              <option value="femo">FEMO Primary Evaluation</option>
+              <option value="baselines">Centralized Baselines</option>
+              <option value="fedavg">FedAvg Comparison</option>
+              <option value="fedprox">FedProx Comparison</option>
+              <option value="ablation">Ablation Studies</option>
+              <option value="all">Full Suite (Long Running)</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label text-muted small text-uppercase">Random Seed</label>
+            <input type="number" class="form-control bg-dark text-light border-secondary" name="seed" value="42">
+          </div>
+          
+          <div class="mb-4">
+            <label class="form-label text-muted small text-uppercase">Federation Settings</label>
+            <div class="input-group mb-2">
+              <span class="input-group-text bg-dark text-muted border-secondary">Clients</span>
+              <input type="number" class="form-control bg-dark text-light border-secondary" name="clients" value="5">
+            </div>
+            <div class="input-group">
+              <span class="input-group-text bg-dark text-muted border-secondary">Rounds</span>
+              <input type="number" class="form-control bg-dark text-light border-secondary" name="rounds" value="50">
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-info w-100 fw-bold shadow-sm">Initialize Run</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Current Configuration Display -->
+  <div class="col-md-7">
+    <div class="card h-100 shadow-sm border-0 bg-dark">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2">
+        <h5 class="card-title fw-bold m-0"><i class="bi bi-file-earmark-code me-2 text-info"></i> Active Configuration (femo_config.json)</h5>
+      </div>
+      <div class="card-body p-0">
+        <pre class="bg-transparent text-light p-3 m-0" style="max-height: 350px; overflow-y: auto;">
+{
+  "model": {
+    "name": "FEMO_v2",
+    "hidden_dims": [128, 64, 32],
+    "dropout": 0.3,
+    "activation": "relu"
+  },
+  "federation": {
+    "strategy": "FEMO",
+    "mu": 0.01,
+    "local_epochs": 5,
+    "batch_size": 32,
+    "learning_rate": 0.001
+  },
+  "data": {
+    "partition": "dirichlet",
+    "alpha": 0.5,
+    "num_clients": 5
+  }
+}
+        </pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Experiment Runs -->
+<div class="card shadow-sm border-0 bg-dark mb-4">
+  <div class="card-header border-bottom border-secondary pt-3 pb-2">
+    <h5 class="card-title fw-bold m-0"><i class="bi bi-clock-history me-2 text-info"></i> Recent Runs</h5>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-dark table-hover mb-0 align-middle">
+        <thead>
+          <tr>
+            <th class="ps-4">Run ID</th>
+            <th>Suite</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Best AUC</th>
+            <th class="text-end pe-4">Logs</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="ps-4 fw-medium text-info">EXP-20260820-01</td>
+            <td>FEMO Primary Evaluation</td>
+            <td>Aug 20, 2026</td>
+            <td><span class="badge bg-success">Completed</span></td>
+            <td>0.892</td>
+            <td class="text-end pe-4"><button class="btn btn-sm btn-outline-secondary">View Log</button></td>
+          </tr>
+          <tr>
+            <td class="ps-4 fw-medium text-info">EXP-20260819-03</td>
+            <td>Ablation Studies</td>
+            <td>Aug 19, 2026</td>
+            <td><span class="badge bg-success">Completed</span></td>
+            <td>0.875</td>
+            <td class="text-end pe-4"><button class="btn btn-sm btn-outline-secondary">View Log</button></td>
+          </tr>
+          <tr>
+            <td class="ps-4 fw-medium text-info">EXP-20260818-01</td>
+            <td>FedProx Comparison</td>
+            <td>Aug 18, 2026</td>
+            <td><span class="badge bg-danger">Failed</span></td>
+            <td>--</td>
+            <td class="text-end pe-4"><button class="btn btn-sm btn-outline-secondary">View Log</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

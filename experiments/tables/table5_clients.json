@@ -1,0 +1,37 @@
+[
+  {
+    "client_id": "Hospital_1",
+    "n_samples": 11591,
+    "roc_auc": 0.8050269869827495,
+    "accuracy": 0.7349051178838413,
+    "brier_score": 0.18446206555377878
+  },
+  {
+    "client_id": "Hospital_2",
+    "n_samples": 11591,
+    "roc_auc": 0.7989509471901788,
+    "accuracy": 0.7354801610120759,
+    "brier_score": 0.18688757743452777
+  },
+  {
+    "client_id": "Hospital_3",
+    "n_samples": 11591,
+    "roc_auc": 0.7989721134511589,
+    "accuracy": 0.7280046003450259,
+    "brier_score": 0.18586048998227175
+  },
+  {
+    "client_id": "Hospital_4",
+    "n_samples": 11590,
+    "roc_auc": 0.7741017567996614,
+    "accuracy": 0.7073030477285797,
+    "brier_score": 0.19376870395769974
+  },
+  {
+    "client_id": "Hospital_5",
+    "n_samples": 11590,
+    "roc_auc": 0.7708858080220129,
+    "accuracy": 0.7004025301897643,
+    "brier_score": 0.19469139682796832
+  }
+]

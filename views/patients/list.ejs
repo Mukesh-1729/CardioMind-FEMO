@@ -1,0 +1,77 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="h3 mb-1">Patient Registry</h1>
+    <p class="text-muted mb-0">Search and manage patient records stored in MySQL.</p>
+  </div>
+  <a class="btn btn-primary" href="/patients/new">Add Patient</a>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+  <div class="card-body">
+    <form method="get" action="/patients" class="row g-3 align-items-end">
+      <div class="col-md-9">
+        <label class="form-label" for="q">Search patients</label>
+        <input
+          id="q"
+          name="q"
+          type="text"
+          class="form-control"
+          placeholder="Search by name, email, phone, city, or state"
+          value="<%= typeof query !== 'undefined' && query ? query : '' %>"
+        >
+      </div>
+      <div class="col-md-3 d-grid">
+        <button type="submit" class="btn btn-outline-primary">Search</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm border-0">
+  <div class="card-body">
+    <% const patientList = typeof patients !== 'undefined' && Array.isArray(patients) ? patients : []; %>
+    <% if (patientList.length === 0) { %>
+      <div class="empty-state text-center py-5">
+        <h2 class="h4">No matching patients</h2>
+        <p class="text-muted mb-0">Try a different search or add a new patient record.</p>
+      </div>
+    <% } else { %>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Sex</th>
+              <th>Contact</th>
+              <th>Location</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% patientList.forEach((patient) => { %>
+              <tr>
+                <td><%= patient.full_name || patient.name || 'N/A' %></td>
+                <td><%= patient.age != null ? patient.age : '--' %></td>
+                <td><%= patient.sex || patient.gender || 'N/A' %></td>
+                <td>
+                  <div><%= patient.email || 'N/A' %></div>
+                  <small class="text-muted"><%= patient.phone || 'No phone' %></small>
+                </td>
+                <td><%= [patient.city, patient.state].filter(Boolean).join(', ') || 'N/A' %></td>
+                <td class="text-end">
+                  <a class="btn btn-sm btn-outline-info me-1" href="/assessments/new?patient_id=<%= patient.id %>"><i class="bi bi-clipboard2-pulse"></i> Assess</a>
+                  <a class="btn btn-sm btn-outline-primary me-1" href="/patients/<%= patient.id %>">View</a>
+                  <a class="btn btn-sm btn-outline-secondary me-1" href="/patients/<%= patient.id %>/edit">Edit</a>
+                  <form action="/patients/<%= patient.id %>/delete" method="post" class="d-inline" onsubmit="return confirm('Delete this patient record?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>

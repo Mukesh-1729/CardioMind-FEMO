@@ -1,0 +1,200 @@
+:root {
+  --bg-darkest: #0d1117;
+  --bg-card: #161b22;
+  --border-color: #1f2937;
+  --accent-cyan: #06b6d4;
+  --success-green: #10b981;
+  --warning-amber: #f59e0b;
+  --danger-red: #ef4444;
+  --danger-dark: #991b1b;
+  --purple-metrics: #8b5cf6;
+  --text-main: #c9d1d9;
+  --text-muted: #8b949e;
+}
+
+body {
+  background-color: var(--bg-darkest);
+  color: var(--text-main);
+}
+
+.app-wrapper {
+  display: flex;
+  min-height: calc(100vh - 56px);
+}
+
+.sidebar {
+  width: 220px;
+  background-color: var(--bg-card);
+  border-right: 1px solid var(--border-color);
+  padding: 1.5rem 0;
+  flex-shrink: 0;
+}
+
+.sidebar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-item {
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-item a {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.sidebar-item a:hover {
+  color: var(--text-main);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-item.active a {
+  color: var(--accent-cyan);
+  background-color: rgba(6, 182, 212, 0.1);
+  border-left: 3px solid var(--accent-cyan);
+}
+
+.sidebar-item a i {
+  margin-right: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 2rem;
+  width: calc(100% - 220px);
+  overflow-x: hidden;
+}
+
+/* Cards */
+.card, .metric-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.card-header {
+  border-bottom: 1px solid var(--border-color);
+  background-color: transparent;
+}
+
+.metric-card {
+  padding: 1.25rem;
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.metric-trend {
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Risk Colors */
+.risk-low { color: var(--success-green) !important; }
+.risk-moderate { color: var(--warning-amber) !important; }
+.risk-high { color: var(--danger-red) !important; }
+.risk-very-high { color: var(--danger-dark) !important; }
+
+.bg-risk-low { background-color: rgba(16, 185, 129, 0.2) !important; color: var(--success-green) !important; }
+.bg-risk-moderate { background-color: rgba(245, 158, 11, 0.2) !important; color: var(--warning-amber) !important; }
+.bg-risk-high { background-color: rgba(239, 68, 68, 0.2) !important; color: var(--danger-red) !important; }
+.bg-risk-very-high { background-color: rgba(153, 27, 27, 0.2) !important; color: var(--danger-dark) !important; }
+
+/* Tables */
+.table {
+  color: var(--text-main);
+}
+.table-dark {
+  background-color: var(--bg-card);
+}
+.table-dark th {
+  border-bottom-color: var(--border-color);
+  color: var(--text-muted);
+}
+.table-dark td {
+  border-bottom-color: var(--border-color);
+}
+
+.research-table th {
+  background-color: #1a222d;
+}
+.research-table .best-value {
+  color: var(--accent-cyan);
+  font-weight: 600;
+  background-color: rgba(6, 182, 212, 0.05);
+}
+
+/* Misc */
+.disclaimer-box {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.privacy-notice {
+  background-color: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  color: var(--purple-metrics);
+}
+
+.fed-status-connected { color: var(--success-green); }
+.fed-status-training { color: var(--warning-amber); }
+.fed-status-completed { color: var(--accent-cyan); }
+
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .app-wrapper {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.5rem 0;
+  }
+  .sidebar-nav {
+    display: flex;
+    overflow-x: auto;
+  }
+  .sidebar-item a {
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
+  }
+  .main-content {
+    width: 100%;
+    padding: 1rem;
+  }
+}

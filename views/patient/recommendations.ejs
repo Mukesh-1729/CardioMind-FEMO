@@ -1,0 +1,82 @@
+<div class="mb-4">
+  <h2 class="fw-bold text-light">My Recommendations</h2>
+  <p class="text-muted">Personalized suggestions to help you maintain a healthy heart.</p>
+</div>
+
+<div class="disclaimer-box text-center bg-dark mb-5 border-info">
+  <i class="bi bi-info-circle-fill text-info me-2 fs-5"></i>
+  <span class="fs-6">These suggestions are based on your recent assessment. Always check with your doctor before starting any new exercise or diet routine.</span>
+</div>
+
+<div class="row g-4">
+  <% if (typeof recommendations !== 'undefined' && recommendations && recommendations.length > 0) { %>
+    <% recommendations.forEach((rec, index) => { %>
+      <div class="col-md-6">
+        <div class="card h-100 shadow-sm border-secondary bg-dark">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <div class="rounded-circle bg-info bg-opacity-25 p-3 me-3">
+                <i class="bi <%= rec.icon || 'bi-star' %> text-info fs-3"></i>
+              </div>
+              <div>
+                <h5 class="fw-bold text-light mb-1"><%= rec.title || rec.category || 'Recommendation' %></h5>
+                <% if (index === 0 || rec.priority === 'High') { %>
+                  <span class="badge bg-info text-dark">Top Priority</span>
+                <% } %>
+              </div>
+            </div>
+            <p class="text-muted"><%= rec.description || rec.action || '' %></p>
+            <% if (rec.reason) { %>
+              <div class="p-3 bg-secondary bg-opacity-10 border border-secondary rounded mt-3">
+                <strong class="text-light d-block mb-1">Why this helps:</strong>
+                <span class="text-muted small"><%= rec.reason %></span>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <!-- Default recommendations if none provided -->
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm border-secondary bg-dark">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="rounded-circle bg-info bg-opacity-25 p-3 me-3">
+              <i class="bi bi-activity text-info fs-3"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold text-light mb-1">Stay Active</h5>
+              <span class="badge bg-info text-dark">Top Priority</span>
+            </div>
+          </div>
+          <p class="text-muted">Aim for at least 30 minutes of moderate activity, like brisk walking, most days of the week.</p>
+          <div class="p-3 bg-secondary bg-opacity-10 border border-secondary rounded mt-3">
+            <strong class="text-light d-block mb-1">Why this helps:</strong>
+            <span class="text-muted small">Regular exercise strengthens your heart muscle and helps lower blood pressure.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm border-secondary bg-dark">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="rounded-circle bg-success bg-opacity-25 p-3 me-3">
+              <i class="bi bi-apple text-success fs-3"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold text-light mb-1">Heart-Healthy Diet</h5>
+            </div>
+          </div>
+          <p class="text-muted">Focus on eating plenty of fruits, vegetables, and whole grains while reducing salt.</p>
+          <div class="p-3 bg-secondary bg-opacity-10 border border-secondary rounded mt-3">
+            <strong class="text-light d-block mb-1">Why this helps:</strong>
+            <span class="text-muted small">A balanced diet can help manage cholesterol levels and blood pressure.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% } %>
+</div>

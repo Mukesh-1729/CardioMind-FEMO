@@ -1,0 +1,36 @@
+<div class="row justify-content-center align-items-center py-4 py-lg-5">
+  <div class="col-lg-6 col-xl-5">
+    <div class="card shadow-lg border-0 auth-card">
+      <div class="card-body p-4 p-lg-5">
+        <div class="mb-4">
+          <span class="badge text-bg-dark mb-3">Secure access</span>
+          <h1 class="h3 mb-2">Doctor Login</h1>
+          <p class="text-muted mb-0">Sign in to access the clinical dashboard and protected assessment routes.</p>
+        </div>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-danger border-0"><%= error %></div>
+        <% } %>
+
+        <form action="/auth/login" method="post" class="vstack gap-3">
+          <div>
+            <label class="form-label" for="email">Email</label>
+            <input id="email" name="email" type="email" class="form-control form-control-lg" autocomplete="email" required value="<%= typeof form !== 'undefined' && form && form.email ? form.email : '' %>">
+          </div>
+
+          <div>
+            <label class="form-label" for="password">Password</label>
+            <input id="password" name="password" type="password" class="form-control form-control-lg" autocomplete="current-password" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg">Login</button>
+        </form>
+
+        <p class="text-muted small mt-4 mb-0">
+          New doctor accounts can be created from the registration page.
+          <a href="/auth/register">Register here</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

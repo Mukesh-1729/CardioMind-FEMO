@@ -1,0 +1,91 @@
+<% const p = typeof patient !== 'undefined' && patient ? patient : {}; %>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="h3 mb-1"><%= p.full_name || 'Patient Record' %></h1>
+    <p class="text-muted mb-0">Patient profile and clinical context.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-secondary" href="/patients">Back</a>
+    <% if (p.id) { %>
+      <a class="btn btn-primary" href="/patients/<%= p.id %>/edit">Edit</a>
+    <% } %>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Demographics</h2>
+        <dl class="row mb-0">
+          <dt class="col-sm-5">Age</dt>
+          <dd class="col-sm-7"><%= p.age != null ? p.age : 'N/A' %></dd>
+
+          <dt class="col-sm-5">Sex</dt>
+          <dd class="col-sm-7"><%= p.sex || 'N/A' %></dd>
+
+          <dt class="col-sm-5">Date of birth</dt>
+          <dd class="col-sm-7"><%= p.date_of_birth || 'N/A' %></dd>
+
+          <dt class="col-sm-5">Email</dt>
+          <dd class="col-sm-7"><%= p.email || 'N/A' %></dd>
+
+          <dt class="col-sm-5">Phone</dt>
+          <dd class="col-sm-7"><%= p.phone || 'N/A' %></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Address & Emergency Contact</h2>
+        <p class="mb-3">
+          <%= p.address_line1 || '' %><%= p.address_line1 && p.address_line2 ? ', ' : '' %><%= p.address_line2 || '' %><br>
+          <%= [p.city, p.state, p.postal_code].filter(Boolean).join(', ') || 'N/A' %>
+        </p>
+
+        <dl class="row mb-0">
+          <dt class="col-sm-5">Emergency contact</dt>
+          <dd class="col-sm-7"><%= p.emergency_contact_name || 'N/A' %></dd>
+
+          <dt class="col-sm-5">Emergency phone</dt>
+          <dd class="col-sm-7"><%= p.emergency_contact_phone || 'N/A' %></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Clinical Details</h2>
+        <div class="mb-3">
+          <h3 class="h6">Medical history</h3>
+          <p class="mb-0"><%= p.medical_history || 'N/A' %></p>
+        </div>
+        <div class="mb-3">
+          <h3 class="h6">Current medications</h3>
+          <p class="mb-0"><%= p.current_medications || 'N/A' %></p>
+        </div>
+        <div class="mb-3">
+          <h3 class="h6">Allergies</h3>
+          <p class="mb-0"><%= p.allergies || 'N/A' %></p>
+        </div>
+        <div>
+          <h3 class="h6">Notes</h3>
+          <p class="mb-0"><%= p.notes || 'N/A' %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if (p.id) { %>
+<div class="mt-4">
+  <form action="/patients/<%= p.id %>/delete" method="post" onsubmit="return confirm('Delete this patient record?');">
+    <button type="submit" class="btn btn-outline-danger">Delete Patient</button>
+  </form>
+</div>
+<% } %>

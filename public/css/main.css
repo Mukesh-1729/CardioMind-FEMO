@@ -1,0 +1,77 @@
+:root {
+  --cardiomind-bg: #08131f;
+  --cardiomind-ink: #eaf2ff;
+  --cardiomind-accent: #56cfe1;
+  --cardiomind-accent-2: #4d7cff;
+  --cardiomind-surface: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  background: linear-gradient(180deg, #06101a 0%, #f4f8fb 34%, #eef4ff 100%);
+  color: #152238;
+  min-height: 100vh;
+}
+
+.app-shell {
+  position: relative;
+}
+
+.nav-gradient {
+  background: linear-gradient(90deg, #08131f 0%, #0d2436 60%, #173a59 100%);
+}
+
+.hero-card {
+  border-radius: 1.5rem;
+  background: radial-gradient(circle at top left, rgba(86, 207, 225, 0.3), transparent 30%), linear-gradient(135deg, #0b1d2e 0%, #10324e 65%, #154365 100%);
+  box-shadow: 0 20px 45px rgba(8, 19, 31, 0.2);
+}
+
+.glass-panel {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 1.25rem;
+  background: var(--cardiomind-surface);
+  backdrop-filter: blur(18px);
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.metric-tile {
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.metric-tile span,
+.metric-tile strong {
+  display: block;
+}
+
+.metric-tile span {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.metric-tile strong {
+  margin-top: 0.35rem;
+  font-size: 1rem;
+}
+
+.workflow-list li {
+  margin-bottom: 0.75rem;
+}
+
+.error-panel,
+.empty-state {
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+@media (max-width: 767.98px) {
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,103 @@
+<div class="row justify-content-center">
+  <div class="col-xl-10">
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-4 p-lg-5">
+        <h1 class="h3 mb-3">Add Patient</h1>
+        <p class="text-muted">Create a new patient profile for cardiovascular assessment and follow-up.</p>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+
+        <% const f = typeof form !== 'undefined' && form ? form : {}; %>
+        <form action="/patients" method="post">
+          <div class="row g-3">
+            <div class="col-md-5">
+              <label class="form-label" for="fullName">Full name</label>
+              <input id="fullName" name="fullName" type="text" class="form-control" placeholder="Jane Doe" required value="<%= f.fullName || '' %>">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label" for="age">Age</label>
+              <input id="age" name="age" type="number" min="0" max="130" class="form-control" placeholder="54" required value="<%= f.age != null ? f.age : '' %>">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label" for="sex">Sex</label>
+              <select id="sex" name="sex" class="form-select" required>
+                <option value="">Select</option>
+                <option value="Female" <%= f.sex === 'Female' ? 'selected' : '' %>>Female</option>
+                <option value="Male" <%= f.sex === 'Male' ? 'selected' : '' %>>Male</option>
+                <option value="Other" <%= f.sex === 'Other' ? 'selected' : '' %>>Other</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label" for="dateOfBirth">Date of birth</label>
+              <input id="dateOfBirth" name="dateOfBirth" type="date" class="form-control" value="<%= f.dateOfBirth || '' %>">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label" for="email">Email</label>
+              <input id="email" name="email" type="email" class="form-control" value="<%= f.email || '' %>">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="phone">Phone</label>
+              <input id="phone" name="phone" type="text" class="form-control" value="<%= f.phone || '' %>">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label" for="addressLine1">Address line 1</label>
+              <input id="addressLine1" name="addressLine1" type="text" class="form-control" value="<%= f.addressLine1 || '' %>">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="addressLine2">Address line 2</label>
+              <input id="addressLine2" name="addressLine2" type="text" class="form-control" value="<%= f.addressLine2 || '' %>">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label" for="city">City</label>
+              <input id="city" name="city" type="text" class="form-control" value="<%= f.city || '' %>">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="state">State</label>
+              <input id="state" name="state" type="text" class="form-control" value="<%= f.state || '' %>">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="postalCode">Postal code</label>
+              <input id="postalCode" name="postalCode" type="text" class="form-control" value="<%= f.postalCode || '' %>">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label" for="emergencyContactName">Emergency contact name</label>
+              <input id="emergencyContactName" name="emergencyContactName" type="text" class="form-control" value="<%= f.emergencyContactName || '' %>">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="emergencyContactPhone">Emergency contact phone</label>
+              <input id="emergencyContactPhone" name="emergencyContactPhone" type="text" class="form-control" value="<%= f.emergencyContactPhone || '' %>">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label" for="medicalHistory">Medical history</label>
+              <textarea id="medicalHistory" name="medicalHistory" rows="3" class="form-control"><%= f.medicalHistory || '' %></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="currentMedications">Current medications</label>
+              <textarea id="currentMedications" name="currentMedications" rows="3" class="form-control"><%= f.currentMedications || '' %></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="allergies">Allergies</label>
+              <textarea id="allergies" name="allergies" rows="2" class="form-control"><%= f.allergies || '' %></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="notes">Clinical notes</label>
+              <textarea id="notes" name="notes" rows="3" class="form-control"><%= f.notes || '' %></textarea>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <a href="/patients" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save Patient</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

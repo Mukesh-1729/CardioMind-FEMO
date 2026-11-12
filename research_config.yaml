@@ -1,0 +1,46 @@
+dataset: datasets/raw/cardio_data_processed.csv
+
+clients: 5
+partition: non_iid
+
+train_ratio: 0.8
+validation_ratio: 0.1
+test_ratio: 0.1
+
+rounds: 30
+local_epochs: 5
+batch_size: 128
+learning_rate: 0.001
+
+seeds:
+  - 42
+  - 52
+  - 62
+  - 72
+  - 82
+
+model:
+  hidden_dim_1: 64
+  hidden_dim_2: 32
+  dropout_rate: 0.2
+
+femo:
+  lambda_cal_max: 0.05
+  lambda_prox: 0.01
+  lambda_risk_max: 0.01
+  huber_delta: 0.1
+  ema_decay: 0.90
+  warmup_rounds: 3
+  eta_quality: 0.5
+  mu_stability: 0.5
+  weight_clip_min: 0.05
+  weight_clip_max: 0.50
+  val_weights:
+    auc: 1.0
+    brier: 0.5
+    ece: 0.5
+
+apcrs:
+  alpha: 0.5
+  beta: 0.3
+  gamma: 0.2

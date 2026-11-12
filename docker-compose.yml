@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # Node.js Web Application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=${DB_NAME:-cardiomind}
+      - DB_USER=${DB_USER:-cardiomind_user}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - ML_SERVICE_URL=http://ml-service:8001
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+      ml-service:
+        condition: service_healthy
+    volumes:
+      - ./views:/app/views
+      - ./public:/app/public
+    restart: unless-stopped
+
+  # Python FastAPI ML Service
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - MODEL_PATH=/app/models
+      - DATA_PATH=/app/data
+    volumes:
+      - ./ml/models/saved:/app/models
+      - ./ml/data:/app/data
+      - ./experiments:/app/experiments
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-rootpassword}
+      - MYSQL_DATABASE=${DB_NAME:-cardiomind}
+      - MYSQL_USER=${DB_USER:-cardiomind_user}
+      - MYSQL_PASSWORD=${DB_PASSWORD:-devpassword}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/02_extended_schema.sql
+      - ./database/seed:/docker-entrypoint-initdb.d/seeds
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  mysql_data:

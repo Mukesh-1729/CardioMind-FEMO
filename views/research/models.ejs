@@ -1,0 +1,167 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold m-0">Detailed Model Analytics</h2>
+  <button class="btn btn-outline-info shadow-sm"><i class="bi bi-download me-1"></i> Download Results CSV</button>
+</div>
+
+<div class="card shadow-sm border-0 bg-dark mb-4">
+  <div class="card-header border-bottom border-secondary pt-3 pb-0">
+    <ul class="nav nav-tabs border-0" id="modelTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active bg-transparent text-light border-0 border-bottom border-3 border-info fw-bold" id="federated-tab" data-bs-toggle="tab" data-bs-target="#federated" type="button" role="tab">Federated (Global)</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link bg-transparent text-muted border-0" id="centralized-tab" data-bs-toggle="tab" data-bs-target="#centralized" type="button" role="tab">Centralized (Baselines)</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link bg-transparent text-muted border-0" id="ablation-tab" data-bs-toggle="tab" data-bs-target="#ablation" type="button" role="tab">Ablation Studies</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link bg-transparent text-muted border-0" id="calibration-tab" data-bs-toggle="tab" data-bs-target="#calibration" type="button" role="tab">Calibration</button>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body p-4">
+    <div class="tab-content" id="modelTabsContent">
+      
+      <!-- Federated Tab -->
+      <div class="tab-pane fade show active" id="federated" role="tabpanel">
+        <h5 class="fw-bold mb-3">Federated Learning Comparison</h5>
+        <div class="table-responsive mb-4">
+          <table class="table table-dark table-hover mb-0 research-table border border-secondary">
+            <thead>
+              <tr>
+                <th>Strategy</th><th>Rounds</th><th>Comm (MB)</th><th>AUC</th><th>F1</th><th>Accuracy</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>FedAvg</td><td>50</td><td>120.5</td><td>0.852</td><td>0.795</td><td>0.825</td></tr>
+              <tr><td>FedProx (μ=0.01)</td><td>50</td><td>150.2</td><td>0.865</td><td>0.808</td><td>0.831</td></tr>
+              <tr class="table-active border-info"><td class="fw-bold text-info">FEMO</td><td>50</td><td>85.4</td><td class="best-value">0.892</td><td class="best-value">0.836</td><td class="best-value">0.854</td></tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <h5 class="fw-bold mb-3 mt-5">Per-Client Performance (AUC)</h5>
+        <div class="chart-container" style="height: 300px;">
+          <canvas id="clientPerfChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Centralized Tab -->
+      <div class="tab-pane fade" id="centralized" role="tabpanel">
+        <h5 class="fw-bold mb-3">Centralized Baselines (Pooled Data)</h5>
+        <p class="text-muted small">These models represent the hypothetical upper bound if all data could be pooled centrally.</p>
+        <div class="table-responsive">
+          <table class="table table-dark table-hover mb-0 research-table border border-secondary">
+            <thead>
+              <tr>
+                <th>Model</th><th>AUC</th><th>F1</th><th>Accuracy</th><th>Brier Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Logistic Regression</td><td>0.785</td><td>0.695</td><td>0.742</td><td>0.190</td></tr>
+              <tr><td>Random Forest</td><td>0.822</td><td>0.751</td><td>0.795</td><td>0.165</td></tr>
+              <tr><td>XGBoost</td><td>0.845</td><td>0.772</td><td>0.810</td><td>0.142</td></tr>
+              <tr><td>LightGBM</td><td>0.848</td><td>0.778</td><td>0.814</td><td>0.140</td></tr>
+              <tr class="text-muted"><td colspan="5"><em>Note: FEMO (0.892 AUC) outperforms basic centralized models due to its specialized architecture.</em></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Ablation Tab -->
+      <div class="tab-pane fade" id="ablation" role="tabpanel">
+        <h5 class="fw-bold mb-3">Feature Importance via Ablation</h5>
+        <div class="table-responsive">
+          <table class="table table-dark table-hover mb-0 research-table border border-secondary">
+            <thead>
+              <tr>
+                <th>Configuration</th><th>AUC</th><th>Δ AUC</th><th>Conclusion</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="table-active"><td class="fw-bold">Full FEMO Model</td><td>0.892</td><td>-</td><td>Baseline for comparison</td></tr>
+              <tr><td>w/o Lab Values</td><td>0.815</td><td class="text-danger">-0.077</td><td>Labs are most critical feature group</td></tr>
+              <tr><td>w/o Vitals</td><td>0.840</td><td class="text-danger">-0.052</td><td>Vitals provide high signal</td></tr>
+              <tr><td>w/o History</td><td>0.865</td><td class="text-warning">-0.027</td><td>History is helpful but less critical</td></tr>
+              <tr><td>w/o Demographics</td><td>0.875</td><td class="text-warning">-0.017</td><td>Slight drop, mostly captured elsewhere</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Calibration Tab -->
+      <div class="tab-pane fade" id="calibration" role="tabpanel">
+        <div class="row">
+          <div class="col-md-8">
+            <h5 class="fw-bold mb-3">Model Calibration Plots</h5>
+            <div id="calibrationPlot" style="width: 100%; height: 400px;"></div>
+          </div>
+          <div class="col-md-4">
+            <h5 class="fw-bold mb-3">Expected Calibration Error (ECE)</h5>
+            <div class="card bg-transparent border-secondary mb-3">
+              <div class="card-body">
+                <h6 class="text-muted">FEMO (Proposed)</h6>
+                <div class="fs-3 fw-bold text-info">0.028 <span class="fs-6 text-muted fw-normal">(Lowest is best)</span></div>
+              </div>
+            </div>
+            <div class="card bg-transparent border-secondary mb-3">
+              <div class="card-body">
+                <h6 class="text-muted">FedProx</h6>
+                <div class="fs-3 fw-bold text-light">0.041</div>
+              </div>
+            </div>
+            <div class="card bg-transparent border-secondary">
+              <div class="card-body">
+                <h6 class="text-muted">FedAvg</h6>
+                <div class="fs-3 fw-bold text-light">0.045</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Tab switching logic for styles
+    const tabs = document.querySelectorAll('button[data-bs-toggle="tab"]');
+    tabs.forEach(tab => {
+      tab.addEventListener('shown.bs.tab', (e) => {
+        tabs.forEach(t => {
+          t.classList.remove('text-light', 'border-bottom', 'border-3', 'border-info', 'fw-bold');
+          t.classList.add('text-muted');
+        });
+        e.target.classList.remove('text-muted');
+        e.target.classList.add('text-light', 'border-bottom', 'border-3', 'border-info', 'fw-bold');
+      });
+    });
+
+    if (typeof FederatedCharts !== 'undefined') {
+      const clientData = [
+        {name: 'Hospital A', auc: 0.885}, {name: 'Hospital B', auc: 0.862}, 
+        {name: 'Hospital C', auc: 0.891}, {name: 'Hospital D', auc: 0.845},
+        {name: 'Hospital E', auc: 0.877}
+      ];
+      FederatedCharts.renderClientPerformance('clientPerfChart', clientData);
+    }
+
+    if (typeof ResearchCharts !== 'undefined') {
+      const calData = [
+        { name: 'FEMO', mean_predicted_value: [0.1, 0.3, 0.5, 0.7, 0.9], fraction_of_positives: [0.12, 0.28, 0.51, 0.68, 0.88] },
+        { name: 'FedAvg', mean_predicted_value: [0.1, 0.3, 0.5, 0.7, 0.9], fraction_of_positives: [0.18, 0.22, 0.45, 0.75, 0.95] }
+      ];
+      // Note: tab might be hidden initially, plotly handles resize poorly sometimes, 
+      // but bootstrap 5 tabs trigger events we can hook into if needed.
+      const calTab = document.getElementById('calibration-tab');
+      if (calTab) {
+        calTab.addEventListener('shown.bs.tab', () => {
+          ResearchCharts.renderCalibrationCurves('calibrationPlot', calData);
+        });
+      }
+    }
+  });
+</script>

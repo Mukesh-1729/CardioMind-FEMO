@@ -1,0 +1,176 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold m-0">Research Dashboard</h2>
+  <a href="/research/experiments" class="btn btn-primary shadow-sm"><i class="bi bi-play-fill me-1"></i> Run Experiments</a>
+</div>
+
+<!-- Quick Stats -->
+<div class="row g-4 mb-4">
+  <div class="col-md-3">
+    <div class="metric-card bg-dark">
+      <div class="metric-label">Total Experiments</div>
+      <div class="metric-value text-light">142</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="metric-card bg-dark">
+      <div class="metric-label">Random Seeds</div>
+      <div class="metric-value text-light">5</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="metric-card bg-dark border-info">
+      <div class="metric-label text-info">Best Global AUC</div>
+      <div class="metric-value text-info">0.892</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="metric-card bg-dark">
+      <div class="metric-label">Best F1 Score</div>
+      <div class="metric-value text-light">0.824</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- ROC Curves (Plotly) -->
+  <div class="col-md-6">
+    <div class="card h-100 shadow-sm border-0 bg-dark">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2">
+        <h5 class="card-title fw-bold m-0">Model Comparison (ROC)</h5>
+      </div>
+      <div class="card-body p-0">
+        <div id="rocChart" style="width: 100%; height: 350px;"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Training Convergence -->
+  <div class="col-md-6">
+    <div class="card h-100 shadow-sm border-0 bg-dark">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2">
+        <h5 class="card-title fw-bold m-0">Federated Convergence</h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container" style="height: 310px;">
+          <canvas id="convergenceChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Model Comparison Table -->
+<div class="card shadow-sm border-0 mb-4 bg-dark">
+  <div class="card-header border-bottom border-secondary pt-3 pb-2">
+    <h5 class="card-title fw-bold m-0">Detailed Model Metrics (Test Set)</h5>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-dark table-hover mb-0 research-table">
+        <thead>
+          <tr>
+            <th class="ps-4">Model</th>
+            <th>Accuracy</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1 Score</th>
+            <th>ROC-AUC</th>
+            <th>Brier Score</th>
+            <th>ECE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="ps-4">Logistic Regression</td>
+            <td>0.742</td><td>0.710</td><td>0.680</td><td>0.695</td><td>0.785</td><td>0.190</td><td>0.085</td>
+          </tr>
+          <tr>
+            <td class="ps-4">Random Forest</td>
+            <td>0.795</td><td>0.762</td><td>0.741</td><td>0.751</td><td>0.822</td><td>0.165</td><td>0.062</td>
+          </tr>
+          <tr>
+            <td class="ps-4">XGBoost</td>
+            <td>0.810</td><td>0.785</td><td>0.760</td><td>0.772</td><td>0.845</td><td>0.142</td><td>0.051</td>
+          </tr>
+          <tr>
+            <td class="ps-4">FedAvg (Global)</td>
+            <td>0.825</td><td>0.790</td><td>0.801</td><td>0.795</td><td>0.852</td><td>0.138</td><td>0.045</td>
+          </tr>
+          <tr>
+            <td class="ps-4">FedProx (Global)</td>
+            <td>0.831</td><td>0.805</td><td>0.812</td><td>0.808</td><td>0.865</td><td>0.131</td><td>0.041</td>
+          </tr>
+          <tr class="table-active border-info">
+            <td class="ps-4 fw-bold text-info"><i class="bi bi-star-fill me-1 small"></i> FEMO (Proposed)</td>
+            <td class="best-value">0.854</td>
+            <td class="best-value">0.832</td>
+            <td class="best-value">0.840</td>
+            <td class="best-value">0.836</td>
+            <td class="best-value">0.892</td>
+            <td class="best-value">0.115</td>
+            <td class="best-value">0.028</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Ablation Study -->
+  <div class="col-md-6">
+    <div class="card h-100 shadow-sm border-0 bg-dark">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2">
+        <h5 class="card-title fw-bold m-0">Ablation Study (AUC)</h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container" style="height: 250px;">
+          <canvas id="ablationChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comm Cost -->
+  <div class="col-md-6">
+    <div class="card h-100 shadow-sm border-0 bg-dark">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2">
+        <h5 class="card-title fw-bold m-0">Comm Cost vs Performance</h5>
+      </div>
+      <div class="card-body p-0">
+        <div id="commChart" style="width: 100%; height: 280px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof ResearchCharts !== 'undefined' && typeof FederatedCharts !== 'undefined') {
+      
+      // Plotly ROC
+      const rocData = [
+        { name: 'FEMO', fpr: [0, 0.1, 0.2, 0.5, 1], tpr: [0, 0.7, 0.85, 0.95, 1], auc: 0.892 },
+        { name: 'FedProx', fpr: [0, 0.1, 0.25, 0.5, 1], tpr: [0, 0.6, 0.78, 0.9, 1], auc: 0.865 },
+        { name: 'FedAvg', fpr: [0, 0.15, 0.3, 0.6, 1], tpr: [0, 0.55, 0.75, 0.88, 1], auc: 0.852 }
+      ];
+      ResearchCharts.renderROCCurves('rocChart', rocData);
+
+      // Plotly Scatter Comm
+      const commData = [
+        { strategy: 'FedAvg', bytes: 120, auc: 0.852 },
+        { strategy: 'FedProx', bytes: 150, auc: 0.865 },
+        { strategy: 'FEMO', bytes: 85, auc: 0.892 }
+      ];
+      ResearchCharts.renderCommVsPerformance('commChart', commData);
+
+      // Chart.js Convergence
+      const roundData = [0.65, 0.72, 0.78, 0.82, 0.85, 0.87, 0.88, 0.885, 0.89, 0.892];
+      FederatedCharts.renderConvergence('convergenceChart', roundData);
+
+      // Chart.js Ablation
+      const ablationData = [0.892, 0.815, 0.840, 0.865];
+      ResearchCharts.renderAblationComparison('ablationChart', ablationData);
+    }
+  });
+</script>

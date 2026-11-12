@@ -1,0 +1,22 @@
+<% 
+  let badgeClass = 'bg-secondary';
+  let iconClass = 'bi-info-circle';
+  const riskLevel = String(typeof risk !== 'undefined' && risk ? risk : '').toLowerCase();
+  
+  if (riskLevel.includes('low')) {
+    badgeClass = 'bg-success';
+    iconClass = 'bi-check-circle';
+  } else if (riskLevel.includes('moderate')) {
+    badgeClass = 'bg-warning text-dark';
+    iconClass = 'bi-exclamation-triangle';
+  } else if (riskLevel.includes('very high')) {
+    badgeClass = 'bg-dark text-danger border border-danger';
+    iconClass = 'bi-exclamation-octagon-fill';
+  } else if (riskLevel.includes('high')) {
+    badgeClass = 'bg-danger';
+    iconClass = 'bi-exclamation-circle';
+  }
+%>
+<span class="badge rounded-pill <%= badgeClass %> px-3 py-2 shadow-sm">
+  <i class="bi <%= iconClass %> me-1"></i> <%= typeof risk !== 'undefined' && risk ? risk : 'Unknown' %>
+</span>

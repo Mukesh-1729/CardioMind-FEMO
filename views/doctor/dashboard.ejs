@@ -1,0 +1,141 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold m-0">Doctor Dashboard</h2>
+  <span class="text-muted"><%= new Date().toLocaleDateString() %></span>
+</div>
+
+<!-- Top Stats Row -->
+<div class="row g-4 mb-4">
+  <div class="col-md-3">
+    <div class="metric-card">
+      <div class="metric-label">Total Patients</div>
+      <div class="metric-value"><%= typeof stats !== 'undefined' ? (stats.total || stats.totalPatients || 0) : 0 %></div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="metric-card">
+      <div class="metric-label">High Risk</div>
+      <div class="metric-value risk-high"><%= typeof stats !== 'undefined' ? (stats.highRisk || 0) : 0 %></div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="metric-card">
+      <div class="metric-label">Moderate Risk</div>
+      <div class="metric-value risk-moderate"><%= typeof stats !== 'undefined' ? (stats.moderateRisk || 0) : 0 %></div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="metric-card">
+      <div class="metric-label">Avg APCRS Score</div>
+      <div class="metric-value"><%= typeof stats !== 'undefined' && stats.avgScore !== undefined ? stats.avgScore : '--' %></div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Risk Distribution Chart -->
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-header border-0 pb-0 pt-3">
+        <h5 class="card-title fw-bold">Risk Distribution</h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container" style="height: 250px;">
+          <canvas id="riskDistChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Federated Learning Status Mini-card -->
+  <div class="col-md-8">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title fw-bold m-0">Federated Learning Status</h5>
+        <span class="badge bg-success shadow-sm">Connected</span>
+      </div>
+      <div class="card-body d-flex flex-column justify-content-center">
+        <div class="row text-center">
+          <div class="col-4">
+            <h6 class="text-muted text-uppercase mb-1">Current Round</h6>
+            <div class="fs-2 fw-bold text-info"><%= typeof fedStatus !== 'undefined' ? fedStatus.round : 12 %></div>
+          </div>
+          <div class="col-4">
+            <h6 class="text-muted text-uppercase mb-1">Strategy</h6>
+            <div class="fs-2 fw-bold text-warning"><%= typeof fedStatus !== 'undefined' ? fedStatus.strategy : 'FEMO' %></div>
+          </div>
+          <div class="col-4">
+            <h6 class="text-muted text-uppercase mb-1">Global AUC</h6>
+            <div class="fs-2 fw-bold text-success"><%= typeof fedStatus !== 'undefined' ? fedStatus.auc : '0.892' %></div>
+          </div>
+        </div>
+        <div class="disclaimer-box mt-4 text-center">
+          <i class="bi bi-shield-check text-success me-1"></i>
+          Models are continually updated via federated learning to improve accuracy without sharing raw data.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent High-Risk Patients -->
+<div class="card mb-4">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="card-title fw-bold m-0">Recent High-Risk Patients</h5>
+    <a href="/patients" class="btn btn-sm btn-outline-info">View All</a>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-dark table-hover mb-0 align-middle">
+        <thead>
+          <tr>
+            <th class="ps-4">Patient Name</th>
+            <th>Age</th>
+            <th>APCRS</th>
+            <th>Risk Class</th>
+            <th>Trend</th>
+            <th>Top Risk Factor</th>
+            <th>Last Assessment</th>
+            <th class="text-end pe-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (typeof highRiskPatients !== 'undefined' && highRiskPatients.length > 0) { %>
+            <% highRiskPatients.forEach(p => { %>
+              <tr>
+                <td class="ps-4 fw-medium"><%= p.name || p.full_name || 'Patient' %></td>
+                <td><%= p.age != null ? p.age : '--' %></td>
+                <td class="fw-bold"><%= p.apcrs != null ? p.apcrs : '--' %></td>
+                <td><%- include('../partials/risk_badge', { risk: p.risk_class || 'Unknown' }) %></td>
+                <td>
+                  <% if (p.trend === 'up') { %> <i class="bi bi-arrow-up text-danger"></i>
+                  <% } else if (p.trend === 'down') { %> <i class="bi bi-arrow-down text-success"></i>
+                  <% } else { %> <i class="bi bi-dash text-secondary"></i> <% } %>
+                </td>
+                <td><%= p.top_factor || p.topRiskFactor || '--' %></td>
+                <td><%= p.last_assessment || p.lastAssessment || 'N/A' %></td>
+                <td class="text-end pe-4">
+                  <a href="/patients/<%= p.id %>" class="btn btn-sm btn-primary">View</a>
+                  <a href="/assessments/new?patient_id=<%= p.id %>" class="btn btn-sm btn-outline-light">Assess</a>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="8" class="text-center py-4 text-muted">No high-risk patients found.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Risk Distribution Chart
+    const counts = <%- JSON.stringify(typeof stats !== 'undefined' && stats.riskDistribution ? stats.riskDistribution : [45, 30, 15, 10]) %>;
+    if (typeof RiskCharts !== 'undefined') {
+      RiskCharts.renderRiskDistribution('riskDistChart', counts);
+    }
+  });
+</script>

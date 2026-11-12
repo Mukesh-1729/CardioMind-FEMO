@@ -1,0 +1,19 @@
+{
+  "random_seeds": [42, 123, 456, 789, 1024],
+  "test_size": 0.15,
+  "val_size": 0.15,
+  "n_clients": 5,
+  "federated": {
+    "n_rounds": 20,
+    "local_epochs": 3,
+    "mu": 0.01,
+    "femo": {
+      "lambda_cal": 0.1,
+      "lambda_prox": 0.01,
+      "lambda_risk": 0.05,
+      "alpha_agg": 1.0,
+      "beta_agg": 0.5,
+      "gamma_agg": 0.5
+    }
+  }
+}

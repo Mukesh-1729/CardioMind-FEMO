@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-lg navbar-dark nav-gradient shadow-sm">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand fw-semibold d-flex align-items-center gap-2" href="/">
+      <i class="bi bi-heart-pulse text-info"></i> CardioMind
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto gap-lg-2 align-items-center">
+        <% if (typeof currentUser !== 'undefined' && currentUser) { %>
+          <li class="nav-item">
+            <a class="nav-link position-relative me-3" href="#">
+              <i class="bi bi-bell fs-5"></i>
+              <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style="margin-top: 10px;">
+                <span class="visually-hidden">New alerts</span>
+              </span>
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span><%= currentUser.full_name %></span>
+              <span class="badge bg-secondary"><%= currentUser.role %></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+              <li><span class="dropdown-item-text small text-muted"><%= currentUser.email %></span></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form action="/auth/logout" method="post" class="px-3 py-1">
+                  <!-- CSRF protection mock -->
+                  <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+                  <button type="submit" class="btn btn-link text-decoration-none dropdown-item px-0">Logout</button>
+                </form>
+              </li>
+            </ul>
+          </li>
+        <% } else { %>
+          <li class="nav-item"><a class="nav-link" href="/auth/login">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="/auth/register">Registration</a></li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>

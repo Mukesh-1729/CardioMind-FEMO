@@ -1,0 +1,106 @@
+<% 
+  const pName = typeof currentUser !== 'undefined' && currentUser ? (currentUser.full_name || currentUser.first_name || 'Patient') : 'Patient';
+  const score = typeof apcrs !== 'undefined' && apcrs != null ? apcrs : 8;
+  const risk = typeof riskClass !== 'undefined' && riskClass ? riskClass : 'Low';
+  
+  let riskMessage = '';
+  const riskLower = String(risk).toLowerCase();
+  if (riskLower.includes('low')) {
+    riskMessage = 'Your risk factors are currently in a low range. Keep up the good work!';
+  } else if (riskLower.includes('moderate')) {
+    riskMessage = 'Some risk factors need attention. Small lifestyle changes can help.';
+  } else {
+    riskMessage = 'Important: Please discuss your heart health with your healthcare provider soon.';
+  }
+%>
+
+<div class="mb-4">
+  <h2 class="fw-bold text-light">Welcome, <%= pName %></h2>
+  <p class="text-muted fs-5">Here is your latest heart health overview.</p>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- APCRS Card (Reused but patient-friendly) -->
+  <div class="col-md-5">
+    <%- include('../partials/apcrs_card', { score: score, risk: risk, trend: typeof trend !== 'undefined' ? trend : 'stable', isPatient: true }) %>
+  </div>
+
+  <!-- Risk Level Indicator & Simple Message -->
+  <div class="col-md-7">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-body d-flex flex-column justify-content-center p-4 p-md-5 text-center">
+        <div class="mb-4">
+          <i class="bi bi-heart-pulse text-info" style="font-size: 3rem;"></i>
+        </div>
+        <h4 class="fw-bold mb-3"><%= riskMessage %></h4>
+        <p class="text-muted">
+          Your Heart Health Score helps you and your doctor understand your overall cardiovascular wellness. It looks at your age, blood pressure, cholesterol, and lifestyle.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Simple Trend Chart -->
+  <div class="col-md-6">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2">
+        <h5 class="card-title fw-bold m-0"><i class="bi bi-graph-up me-2 text-info"></i> Your Recent History</h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container" style="height: 220px;">
+          <canvas id="patientTrendChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Areas to Focus On (No SHAP) -->
+  <div class="col-md-6">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2 d-flex justify-content-between align-items-center">
+        <h5 class="card-title fw-bold m-0"><i class="bi bi-star me-2 text-warning"></i> Recommended Actions</h5>
+        <a href="/patient/recommendations" class="btn btn-sm btn-outline-info">View All</a>
+      </div>
+      <div class="card-body">
+        <div class="list-group list-group-flush bg-transparent">
+          <% if (typeof recommendations !== 'undefined' && recommendations.length > 0) { %>
+            <% recommendations.slice(0, 3).forEach(rec => { %>
+              <div class="list-group-item bg-transparent px-0 border-secondary">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1 text-light"><i class="bi <%= rec.icon || 'bi-arrow-right-circle' %> me-2 text-info"></i> <%= rec.title %></h6>
+                </div>
+                <p class="mb-1 text-muted small"><%= rec.description %></p>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <div class="list-group-item bg-transparent px-0 border-0 text-muted">
+              <h6 class="mb-1 text-light"><i class="bi bi-cup-hot me-2 text-info"></i> Stay Active</h6>
+              <p class="mb-1 small">Aim for 30 minutes of moderate activity daily.</p>
+            </div>
+            <div class="list-group-item bg-transparent px-0 border-0 text-muted">
+              <h6 class="mb-1 text-light"><i class="bi bi-apple me-2 text-success"></i> Eat Healthy</h6>
+              <p class="mb-1 small">Include more vegetables and whole grains in your meals.</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="disclaimer-box text-center bg-dark mt-2 border-secondary">
+  <i class="bi bi-info-circle-fill text-info me-2"></i>
+  This is a research tool. Please consult your doctor for medical advice. Your personal health information is kept private.
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof RiskCharts !== 'undefined') {
+      const histLabels = <%- JSON.stringify(typeof history !== 'undefined' ? history.labels : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']) %>;
+      const histValues = <%- JSON.stringify(typeof history !== 'undefined' ? history.values : [12, 11, 11, 10, 9, 8, 8]) %>;
+      RiskCharts.renderRiskHistory('patientTrendChart', histLabels, histValues);
+    }
+  });
+</script>

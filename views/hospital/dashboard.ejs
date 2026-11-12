@@ -1,0 +1,113 @@
+<% 
+  const hospitalId = typeof hospital !== 'undefined' ? hospital.id : 'Node-7A';
+  const status = typeof fedStatus !== 'undefined' ? fedStatus.state : 'Training';
+  
+  let statusClass = 'fed-status-training';
+  let statusIcon = 'bi-arrow-repeat';
+  if (status === 'Connected') {
+    statusClass = 'fed-status-connected';
+    statusIcon = 'bi-link-45deg';
+  } else if (status === 'Completed') {
+    statusClass = 'fed-status-completed';
+    statusIcon = 'bi-check2-circle';
+  }
+%>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold m-0">Simulated Hospital Client <%= hospitalId %></h2>
+  <span class="badge bg-secondary px-3 py-2 fs-6">
+    <i class="bi <%= statusIcon %> me-2 <%= statusClass %>"></i> <span class="<%= statusClass %> fw-bold"><%= status %></span>
+  </span>
+</div>
+
+<div class="privacy-notice mb-4 shadow-sm">
+  <div class="d-flex align-items-center">
+    <i class="bi bi-shield-lock-fill fs-2 me-3"></i>
+    <div>
+      <h5 class="fw-bold mb-1 text-light">Privacy & Security Notice</h5>
+      <p class="mb-0 small">Raw patient data never leaves this node. Only model parameters and gradients are shared with the federation server using secure aggregation.</p>
+    </div>
+  </div>
+</div>
+
+<div class="disclaimer-box text-center mb-4 bg-dark border-secondary">
+  <i class="bi bi-info-circle text-info me-1"></i>
+  This is a research simulation using public datasets. Data shown represents simulated hospital partition statistics only.
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Local Statistics -->
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2">
+        <h5 class="card-title fw-bold m-0 text-info">Local Statistics</h5>
+      </div>
+      <div class="card-body">
+        <ul class="list-group list-group-flush bg-transparent">
+          <li class="list-group-item bg-transparent text-light px-0 d-flex justify-content-between">
+            <span class="text-muted">Local Records</span> <strong class="fs-5"><%= typeof localStats !== 'undefined' ? localStats.records : '2,450' %></strong>
+          </li>
+          <li class="list-group-item bg-transparent text-light px-0 d-flex justify-content-between">
+            <span class="text-muted">Local Model AUC</span> <strong class="fs-5 text-success"><%= typeof localStats !== 'undefined' ? localStats.auc : '0.865' %></strong>
+          </li>
+          <li class="list-group-item bg-transparent text-light px-0 d-flex justify-content-between border-0">
+            <span class="text-muted">Partition Mode</span> <strong><%= typeof localStats !== 'undefined' ? localStats.partition : 'Non-IID (Dirichlet)' %></strong>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Current Federated Round -->
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2">
+        <h5 class="card-title fw-bold m-0 text-info">Current Round Info</h5>
+      </div>
+      <div class="card-body">
+        <ul class="list-group list-group-flush bg-transparent">
+          <li class="list-group-item bg-transparent text-light px-0 d-flex justify-content-between">
+            <span class="text-muted">Round Number</span> <strong class="fs-5"><%= typeof fedInfo !== 'undefined' ? fedInfo.round : '12 / 50' %></strong>
+          </li>
+          <li class="list-group-item bg-transparent text-light px-0 d-flex justify-content-between">
+            <span class="text-muted">Strategy</span> <strong class="text-warning"><%= typeof fedInfo !== 'undefined' ? fedInfo.strategy : 'FEMO' %></strong>
+          </li>
+          <li class="list-group-item bg-transparent text-light px-0 d-flex justify-content-between border-0">
+            <span class="text-muted">Global Model</span> <strong><%= typeof fedInfo !== 'undefined' ? fedInfo.modelVersion : 'v2.1.0' %></strong>
+          </li>
+        </ul>
+        <div class="mt-3">
+          <div class="d-flex justify-content-between small text-muted mb-1">
+            <span>Round Progress</span>
+            <span><%= typeof fedInfo !== 'undefined' ? fedInfo.progress : '45%' %></span>
+          </div>
+          <div class="progress bg-dark border border-secondary" style="height: 10px;">
+            <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" style="width: <%= typeof fedInfo !== 'undefined' ? fedInfo.progress : '45%' %>"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Communication Statistics -->
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2">
+        <h5 class="card-title fw-bold m-0 text-info">Network Stats</h5>
+      </div>
+      <div class="card-body">
+        <ul class="list-group list-group-flush bg-transparent">
+          <li class="list-group-item bg-transparent text-light px-0 d-flex justify-content-between">
+            <span class="text-muted"><i class="bi bi-arrow-up-circle text-info me-2"></i> Total Sent</span> <strong><%= typeof netStats !== 'undefined' ? netStats.sent : '45.2 MB' %></strong>
+          </li>
+          <li class="list-group-item bg-transparent text-light px-0 d-flex justify-content-between">
+            <span class="text-muted"><i class="bi bi-arrow-down-circle text-success me-2"></i> Total Received</span> <strong><%= typeof netStats !== 'undefined' ? netStats.received : '43.8 MB' %></strong>
+          </li>
+          <li class="list-group-item bg-transparent text-light px-0 d-flex justify-content-between border-0">
+            <span class="text-muted">Rounds Participated</span> <strong><%= typeof netStats !== 'undefined' ? netStats.participated : '12' %></strong>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

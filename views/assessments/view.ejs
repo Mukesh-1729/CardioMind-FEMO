@@ -1,0 +1,134 @@
+<% 
+  const result = typeof assessment !== 'undefined' && assessment ? assessment : {
+    apcrs: 14, risk_class: 'Moderate', probability: '18%', model_version: 'FEMO-v2.1',
+    patient_id: '1'
+  };
+%>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold m-0">Assessment Result</h2>
+  <div>
+    <a href="/patients/<%= result.patient_id || '' %>" class="btn btn-outline-light me-2">View Patient Profile</a>
+    <a href="/assessments/new?patient_id=<%= result.patient_id || '' %>" class="btn btn-primary">Run Another</a>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Risk Result Hero Card -->
+  <div class="col-md-5">
+    <div class="card h-100 shadow border-0" style="background: linear-gradient(145deg, #161b22, #0d1117);">
+      <div class="card-body text-center p-5 d-flex flex-column justify-content-center">
+        <h4 class="text-muted text-uppercase mb-3">APCRS Score</h4>
+        <% 
+          let riskColorClass = 'text-secondary';
+          const rClass = String(result.risk_class || 'Moderate').toLowerCase();
+          if (rClass.includes('low')) riskColorClass = 'risk-low';
+          else if (rClass.includes('moderate')) riskColorClass = 'risk-moderate';
+          else if (rClass.includes('high')) riskColorClass = 'risk-high';
+        %>
+        <div class="display-1 fw-bolder mb-2 <%= riskColorClass %>"><%= result.apcrs != null ? result.apcrs : '--' %></div>
+        <div class="mb-4">
+          <%- include('../partials/risk_badge', { risk: result.risk_class || 'Unknown' }) %>
+        </div>
+        
+        <div class="row text-center mt-4 border-top border-secondary pt-4">
+          <div class="col-6 border-end border-secondary">
+            <h6 class="text-muted mb-1">Probability</h6>
+            <div class="fs-4 text-light fw-bold"><%= result.probability %></div>
+          </div>
+          <div class="col-6">
+            <h6 class="text-muted mb-1">Model</h6>
+            <div class="fs-5 text-info mt-1"><%= result.model_version %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHAP Feature Attribution -->
+  <div class="col-md-7">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2">
+        <h5 class="card-title fw-bold m-0">Risk Drivers (SHAP Analysis)</h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container" style="height: 280px;">
+          <canvas id="shapChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Clinical Values Summary -->
+  <div class="col-md-6">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2">
+        <h5 class="card-title fw-bold m-0">Input Values Summary</h5>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-dark table-striped mb-0">
+          <tbody>
+            <% if (typeof inputs !== 'undefined') { %>
+              <% Object.keys(inputs).forEach(key => { %>
+                <tr>
+                  <td class="text-muted"><%= key.replace('_', ' ').toUpperCase() %></td>
+                  <td class="text-end fw-bold"><%= inputs[key] %></td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr><td>Systolic BP</td><td class="text-end fw-bold">142 mmHg</td></tr>
+              <tr><td>Cholesterol</td><td class="text-end fw-bold">210 mg/dL</td></tr>
+              <tr><td>Smoking</td><td class="text-end fw-bold">Current</td></tr>
+              <tr><td>Age</td><td class="text-end fw-bold">58</td></tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="col-md-6">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-header border-bottom border-secondary pt-3 pb-2">
+        <h5 class="card-title fw-bold m-0">Generated Recommendations</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex flex-column gap-3">
+          <% if (typeof recommendations !== 'undefined' && recommendations.length > 0) { %>
+            <% recommendations.forEach(rec => { %>
+              <div class="p-3 bg-dark border border-secondary rounded">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <strong class="text-info"><i class="bi bi-check-circle me-1"></i> <%= rec.category %></strong>
+                  <% if (rec.priority === 'High') { %><span class="badge bg-danger">High</span><% } %>
+                </div>
+                <p class="text-muted small mb-0"><%= rec.action %></p>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <div class="p-3 bg-dark border border-secondary rounded text-center text-muted">
+              Consult clinical guidelines for BP and lipid management.
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="disclaimer-box text-center">
+  <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i>
+  <strong>Research Use Only:</strong> This assessment is generated by the CardioMind-FEMO federated learning model. It is not an FDA-approved medical device and must not replace professional clinical judgment.
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof RiskCharts !== 'undefined') {
+      const shapFeatures = <%- JSON.stringify(typeof shap !== 'undefined' ? shap.features : ['Systolic BP', 'Age', 'Smoking', 'Cholesterol', 'Glucose']) %>;
+      const shapValues = <%- JSON.stringify(typeof shap !== 'undefined' ? shap.values : [0.25, 0.18, 0.15, 0.09, -0.04]) %>;
+      RiskCharts.renderSHAPBars('shapChart', shapFeatures, shapValues);
+    }
+  });
+</script>

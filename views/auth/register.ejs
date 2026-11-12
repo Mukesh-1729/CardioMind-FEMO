@@ -1,0 +1,59 @@
+<div class="row justify-content-center align-items-center py-4 py-lg-5">
+  <div class="col-lg-8 col-xl-7">
+    <div class="card shadow-lg border-0 auth-card">
+      <div class="card-body p-4 p-lg-5">
+        <div class="mb-4">
+          <span class="badge text-bg-dark mb-3">Doctor onboarding</span>
+          <h1 class="h3 mb-2">Doctor Registration</h1>
+          <p class="text-muted mb-0">Create a secure clinician account for authenticated access to CardioMind.</p>
+        </div>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-danger border-0"><%= error %></div>
+        <% } %>
+
+        <% const f = typeof form !== 'undefined' && form ? form : {}; %>
+        <form action="/auth/register" method="post" class="vstack gap-3">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="fullName">Full name</label>
+              <input id="fullName" name="fullName" type="text" class="form-control form-control-lg" autocomplete="name" required value="<%= f.fullName || '' %>">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="email">Email</label>
+              <input id="email" name="email" type="email" class="form-control form-control-lg" autocomplete="email" required value="<%= f.email || '' %>">
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="specialty">Specialty</label>
+              <input id="specialty" name="specialty" type="text" class="form-control form-control-lg" autocomplete="organization-title" value="<%= f.specialty || '' %>">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="licenseNumber">Medical license number</label>
+              <input id="licenseNumber" name="licenseNumber" type="text" class="form-control form-control-lg" autocomplete="off" required value="<%= f.licenseNumber || '' %>">
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="password">Password</label>
+              <input id="password" name="password" type="password" class="form-control form-control-lg" autocomplete="new-password" required minlength="12">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="confirmPassword">Confirm password</label>
+              <input id="confirmPassword" name="confirmPassword" type="password" class="form-control form-control-lg" autocomplete="new-password" required minlength="12">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg">Create account</button>
+        </form>
+
+        <p class="text-muted small mt-4 mb-0">
+          Already have an account? <a href="/auth/login">Sign in</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

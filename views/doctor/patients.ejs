@@ -1,0 +1,99 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold m-0">Patient Directory</h2>
+  <a href="/assessments/new" class="btn btn-primary shadow-sm"><i class="bi bi-plus-lg me-1"></i> New Assessment</a>
+</div>
+
+<div class="card mb-4 shadow-sm border-0">
+  <div class="card-body">
+    <form action="/patients" method="GET" class="row g-3 align-items-end">
+      <div class="col-md-5">
+        <label for="search" class="form-label text-muted small text-uppercase">Search Patients</label>
+        <div class="input-group">
+          <span class="input-group-text bg-dark border-secondary text-muted"><i class="bi bi-search"></i></span>
+          <input type="text" class="form-control bg-dark text-light border-secondary" id="search" name="q" placeholder="Name, ID, or MRN" value="<%= typeof query !== 'undefined' ? query : '' %>">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label for="riskClass" class="form-label text-muted small text-uppercase">Filter by Risk</label>
+        <select class="form-select bg-dark text-light border-secondary" id="riskClass" name="risk">
+          <option value="">All Risk Classes</option>
+          <option value="Low">Low Risk</option>
+          <option value="Moderate">Moderate Risk</option>
+          <option value="High">High Risk</option>
+          <option value="Very High">Very High Risk</option>
+        </select>
+      </div>
+      <div class="col-md-4 d-flex gap-2">
+        <button type="submit" class="btn btn-info w-100">Apply Filters</button>
+        <button type="button" class="btn btn-outline-secondary w-100"><i class="bi bi-download me-1"></i> Export CSV</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm border-0">
+  <div class="card-header d-flex justify-content-between align-items-center border-bottom border-secondary">
+    <h5 class="card-title fw-bold m-0">Total Patients: <%= typeof totalCount !== 'undefined' ? totalCount : (typeof patients !== 'undefined' && patients ? patients.length : 0) %></h5>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-dark table-hover mb-0 align-middle">
+        <thead>
+          <tr>
+            <th class="ps-4">Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>APCRS</th>
+            <th>Risk Class</th>
+            <th>Last BP</th>
+            <th>Trend</th>
+            <th>Last Assessment</th>
+            <th class="text-end pe-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (typeof patients !== 'undefined' && patients.length > 0) { %>
+            <% patients.forEach(p => { %>
+              <tr>
+                <td class="ps-4 fw-medium"><%= p.name || p.full_name || 'Patient' %></td>
+                <td><%= p.age != null ? p.age : '--' %></td>
+                <td><%= p.gender || p.sex || 'Unknown' %></td>
+                <td class="fw-bold"><%= p.apcrs != null ? p.apcrs : '--' %></td>
+                <td><%- include('../partials/risk_badge', { risk: p.risk_class || 'Unknown' }) %></td>
+                <td><%= p.last_bp || (p.systolic_bp && p.diastolic_bp ? `${p.systolic_bp}/${p.diastolic_bp}` : '--') %></td>
+                <td>
+                  <% if (p.trend === 'up') { %> <i class="bi bi-arrow-up text-danger"></i>
+                  <% } else if (p.trend === 'down') { %> <i class="bi bi-arrow-down text-success"></i>
+                  <% } else { %> <i class="bi bi-dash text-secondary"></i> <% } %>
+                </td>
+                <td><%= p.last_assessment || p.lastAssessment || 'N/A' %></td>
+                <td class="text-end pe-4">
+                  <a href="/patients/<%= p.id %>" class="btn btn-sm btn-primary">View</a>
+                  <a href="/assessments/new?patient_id=<%= p.id %>" class="btn btn-sm btn-outline-light">Assess</a>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="9" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                No patients found matching your criteria.
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer border-top border-secondary d-flex justify-content-center pt-3 pb-2">
+    <nav aria-label="Patient pagination">
+      <ul class="pagination pagination-sm mb-0">
+        <li class="page-item disabled"><a class="page-link bg-dark border-secondary text-muted" href="#">Previous</a></li>
+        <li class="page-item active"><a class="page-link bg-info border-info text-dark fw-bold" href="#">1</a></li>
+        <li class="page-item"><a class="page-link bg-dark border-secondary text-light" href="#">2</a></li>
+        <li class="page-item"><a class="page-link bg-dark border-secondary text-light" href="#">3</a></li>
+        <li class="page-item"><a class="page-link bg-dark border-secondary text-light" href="#">Next</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>

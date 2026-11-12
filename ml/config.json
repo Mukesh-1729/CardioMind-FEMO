@@ -1,0 +1,40 @@
+{
+  "random_seeds": [42, 123, 456, 789, 1024],
+  "test_size": 0.15,
+  "val_size": 0.15,
+  "n_clients": 5,
+  "federated": {
+    "n_rounds": 20,
+    "local_epochs": 3,
+    "mu": 0.01,
+    "femo": {
+      "lambda_cal": 0.1,
+      "lambda_prox": 0.01,
+      "lambda_risk": 0.05,
+      "alpha_agg": 1.0,
+      "beta_agg": 0.5,
+      "gamma_agg": 0.5
+    }
+  },
+  "apcrs": {
+    "alpha": 0.5,
+    "beta": 0.3,
+    "gamma": 0.2
+  },
+  "risk_thresholds": {
+    "low_max": 0.3,
+    "moderate_max": 0.6,
+    "high_max": 1.0
+  },
+  "hypertension_thresholds": {
+    "systolic": 140,
+    "diastolic": 90
+  },
+  "models": {
+    "logistic_regression": {"max_iter": 1000, "C": 1.0},
+    "random_forest": {"n_estimators": 100, "max_depth": 10},
+    "xgboost": {"n_estimators": 100, "max_depth": 6, "learning_rate": 0.1},
+    "lightgbm": {"n_estimators": 100, "max_depth": 6, "learning_rate": 0.1},
+    "catboost": {"iterations": 100, "depth": 6, "learning_rate": 0.1}
+  }
+}

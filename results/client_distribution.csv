@@ -1,0 +1,6 @@
+client_id,hospital_name,sample_count,positive_rate,pos_samples,neg_samples
+Hospital_1,Hospital 1 (Metro Prevention),4943,0.0662,327,4616
+Hospital_2,Hospital 2 (CardioVascular Specialty),17421,0.6781,11814,5607
+Hospital_3,Hospital 3 (Geriatric Care Center),13445,0.4402,5919,7526
+Hospital_4,Hospital 4 (Metabolic & Lipid Clinic),11515,0.5547,6387,5128
+Hospital_5,Hospital 5 (Community General),7219,0.3438,2482,4737

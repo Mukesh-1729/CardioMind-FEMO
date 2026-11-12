@@ -1,0 +1,58 @@
+<% 
+  const scoreValue = typeof score !== 'undefined' && score != null ? score : '--';
+  const riskLevel = typeof risk !== 'undefined' && risk ? risk : 'Unknown';
+  const trendVal = typeof trend !== 'undefined' && trend ? trend : 'stable';
+  const isPatientView = typeof isPatient !== 'undefined' ? isPatient : false;
+  
+  let riskColorClass = 'text-secondary';
+  let bgClass = '';
+  
+  const riskLower = String(riskLevel).toLowerCase();
+  if (riskLower.includes('low')) {
+    riskColorClass = 'risk-low';
+    bgClass = 'bg-risk-low';
+  } else if (riskLower.includes('moderate')) {
+    riskColorClass = 'risk-moderate';
+    bgClass = 'bg-risk-moderate';
+  } else if (riskLower.includes('very high')) {
+    riskColorClass = 'risk-very-high';
+    bgClass = 'bg-risk-very-high';
+  } else if (riskLower.includes('high')) {
+    riskColorClass = 'risk-high';
+    bgClass = 'bg-risk-high';
+  }
+
+  let trendIcon = 'bi-dash-lg text-secondary';
+  if (trendVal === 'up') trendIcon = 'bi-arrow-up text-danger';
+  if (trendVal === 'down') trendIcon = 'bi-arrow-down text-success';
+%>
+<div class="card metric-card text-center h-100 shadow-sm border-0 <%= bgClass %>">
+  <div class="card-body d-flex flex-column justify-content-center py-4">
+    <h5 class="text-uppercase text-muted small fw-bold mb-3">
+      <%= isPatientView ? 'Your Heart Health Score' : 'APCRS Score' %>
+    </h5>
+    
+    <div class="display-1 fw-bolder mb-2 <%= riskColorClass %>">
+      <%= scoreValue %>
+    </div>
+    
+    <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
+      <%- include('risk_badge', { risk: riskLevel }) %>
+      <% if (trendVal !== 'none' && trendVal) { %>
+        <span class="badge bg-light text-dark shadow-sm" title="Trend: <%= trendVal %>">
+          <i class="bi <%= trendIcon %>"></i>
+        </span>
+      <% } %>
+    </div>
+    
+    <% if (isPatientView) { %>
+      <p class="small text-muted mt-3 mb-0">
+        This score estimates your cardiovascular risk. <br>Lower is better.
+      </p>
+    <% } else { %>
+      <p class="small text-muted mt-3 mb-0">
+        Asia Pacific Cohort Studies Collaborative Risk Score
+      </p>
+    <% } %>
+  </div>
+</div>

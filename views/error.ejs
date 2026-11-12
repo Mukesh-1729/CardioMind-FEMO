@@ -1,0 +1,5 @@
+<div class="error-panel text-center py-5">
+  <h1 class="display-6 fw-bold"><%= typeof title !== 'undefined' && title ? title : 'Error' %></h1>
+  <p class="lead text-muted"><%= typeof message !== 'undefined' && message ? message : 'An unexpected error occurred.' %></p>
+  <a class="btn btn-primary" href="/">Back to dashboard</a>
+</div>
